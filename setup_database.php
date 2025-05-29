@@ -2,56 +2,22 @@
 echo "<h2>🚀 Portfolio Database Setup</h2>";
 
 // Database configuration
-$host = 'localhost';
-$username = 'root';
-$password = '';
-$database = 'portfolio_db';
+$host = 'db.ycikzujwkgrwaajhgeqq.supabase.co';
+$port = '5432';
+$dbname = 'postgres';
+$user = 'postgres';
+$password = '4cgk6xRmQ5H9YLfJ';
+
+$dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 
 try {
-    // Connect to MySQL server (without database)
-    $pdo = new PDO("mysql:host=$host", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "✅ Connected to MySQL server<br>";
-    
-    // Create database
-    $pdo->exec("DROP DATABASE IF EXISTS $database");
-    $pdo->exec("CREATE DATABASE $database");
-    echo "✅ Database '$database' created<br>";
-    
-    // Connect to the new database
-    $pdo = new PDO("mysql:host=$host;dbname=$database", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "✅ Connected to database<br>";
-    
-    // Create users table
-    $pdo->exec("
-        CREATE TABLE users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            full_name VARCHAR(100) NOT NULL,
-            email VARCHAR(100) NOT NULL,
-            photo VARCHAR(255) DEFAULT 'default.jpg',
-            bio TEXT,
-            skills TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ");
-    echo "✅ Users table created<br>";
-    
-    // Create portfolio_items table
-    $pdo->exec("
-        CREATE TABLE portfolio_items (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            user_id INT,
-            title VARCHAR(200) NOT NULL,
-            description TEXT,
-            image VARCHAR(255),
-            project_url VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-        )
-    ");
+    $pdo = new PDO($dsn, $user, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+    echo "✅ Connected to Supabase PostgreSQL<br>";
+} catch (PDOException $e) {
+    echo "❌ Connection failed: " . $e->getMessage();
+}
     echo "✅ Portfolio items table created<br>";
     
     // Insert users
